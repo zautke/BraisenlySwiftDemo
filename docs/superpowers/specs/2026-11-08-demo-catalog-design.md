@@ -432,7 +432,7 @@ theme, normalised through `BraisenlyThemes.theme(withID:)` (unknown → `liquidG
   name ends in `View` or `ViewModifier`. `SYMBOLGRAPH_TARGET=arm64-apple-macos26.0` (the macOS 26 floor; `macos14.0` from the
   original recipe cannot import the module). `--check` regenerates into a temp file and exits 1 with a diff on drift.
 - Platform authority: the macOS symbol graph is authoritative. The package keeps an identical public surface on iOS and
-  macOS (no public type behind `#if os`); an entry naming a type missing on iOS fails the iOS build, which catches the
+  macOS (no public type behind `#if os`; package-spec invariant, U-16); an entry naming a type missing on iOS fails the iOS build, which catches the
   reverse case. An iOS-only public type is a package defect.
 - `RegistryCompletenessTests` (fixture bundled as a test resource; env var `CATALOG_PUBLIC_VIEWS_OVERRIDE` = absolute path
   replaces it when set): `catalogCoversEveryPublicView` (`Set(all.compactMap(\.typeName)) == fixture`; failure lists
@@ -476,7 +476,8 @@ theme, normalised through `BraisenlyThemes.theme(withID:)` (unknown → `liquidG
     `Tests/Fixtures`, resources `Tests/Fixtures`, host `BraisenlySwiftDemo`.
   - `BraisenlySwiftDemoUITests`: `bundle.ui-testing`, `supportedDestinations: [iOS, macOS]`, sources `UITests` excluding
     `UITests/Fixtures`, resources `UITests/Fixtures`, `TEST_TARGET_NAME: BraisenlySwiftDemo`.
-- schemes: `BraisenlySwiftDemo` (build; test both test targets), `BraisenlySwiftDemo-AI` (build only).
+- schemes: `BraisenlySwiftDemo` (build; test both test targets), `BraisenlySwiftDemo-AI` (build only; build status is reported, not
+  a release gate for 0.1.0, U-15).
 
 `.env.example` (committed; `.env` gitignored):
 ```
@@ -504,7 +505,7 @@ arguments, `-h/--help`). `scripts/lib/common.sh`: `load_env`, `require_vars VAR.
 | `build-ios.sh` | -s/--scheme, -d/--destination (default `id=$DEVICE_UDID`), -g/--generic (`generic/platform=iOS`), --derived-data, -h | refuse_simulator, `xcodebuild … -allowProvisioningUpdates build` |
 | `deploy-presto.sh` | -s/--scheme, -e/--entry, -t/--theme, -n/--no-console, -h | build-ios; `xcrun devicectl device install app --device "$DEVICE_UDID" build/DerivedData/Build/Products/Debug-iphoneos/<Product>.app`; `xcrun devicectl device process launch --device "$DEVICE_UDID" --terminate-existing [--console] <bundle id> -- [-catalogEntry e] [-catalogTheme t]` |
 | `run-mac.sh` | -s/--scheme, -e/--entry, -t/--theme, -h | build-mac; `open -n build/DerivedData/Build/Products/Debug/<Product>.app --args [...]` |
-| `check.sh` | -a/--ai (also build the AI scheme both destinations), -h | gen → dogfood-lint → public-views --check → test-unit → build-mac → build-ios (`id=$DEVICE_UDID` when `xcrun devicectl list devices` shows it available, else `-g`) → the three negative tests; stops at the first failure |
+| `check.sh` | -a/--ai (also attempt the AI scheme on both destinations; result reported, never fails the run, U-15), -h | gen → dogfood-lint → public-views --check → test-unit → build-mac → build-ios (`id=$DEVICE_UDID` when `xcrun devicectl list devices` shows it available, else `-g`) → the three negative tests; stops at the first failure |
 
 ## 13. UI test `CatalogWalkTests` (XCTest)
 
@@ -566,9 +567,17 @@ Contract deltas against the package spec (all resolved in this revision; first d
 - CD-7 Theme bindings are `Binding<BraisenlyThemeDefinition.ID>`; `MobileWorkspaceView(initialTheme:)` takes an id.
 - CD-8 `BraisenlyThemes.theme(withID:)` provides the unknown-id fallback, so the demo has no `CatalogTheme` helper.
 - CD-9 Not covered by the package spec, owned by the demo: symbol-graph target `arm64-apple-macos26.0` (§10), and the
-  iOS/macOS public-surface parity invariant (§10) — asked of the package as a documented rule.
+  iOS/macOS public-surface parity invariant (§10), now a package-spec invariant (U-16).
 
 Builder-check questions and how this revision answers them: package order and gaps → §3; `BraisenlyThemeToggle` and counts →
 §4 "Removed", §8 totals, §17 CD-5; AI target contents → §2 non-goals, AI spec §3; symbol-graph platform → §10; nested split
 views → §5; colour scheme → §4 Theme row (`braisenlyTheme` applies it); snippet copy → §5 and AG-1; UI-test animation flag →
 dropped (§2 non-goals).
+
+User decisions on the three open questions (2026-11-08, all RESOLVED):
+- U-15 RESOLVED: demo 0.1.0 does not block on the `BraisenlySwiftDemo-AI` stub building. Its build is attempted and its
+  status (pass, or the first compiler/linker error) is recorded in the run ledger as open; it is a report, not a gate.
+- U-16 RESOLVED: the package spec adds the invariant "public surface identical on iOS and macOS"; the macOS symbol graph
+  is authoritative for the completeness test (§10).
+- U-17 RESOLVED: client injection for `AIChatWorkspaceController` is a package follow-up issue scheduled with the AI group
+  (AI spec AI-C3).

@@ -65,8 +65,12 @@
 - [ ] **Step 4: Write `scripts/lib/common.sh` and all scripts in the Files list** with the switches and behaviour of spec §12 table (`check.sh` at this stage: gen → test-unit → build-mac → build-ios, with `-a/--ai`; later tasks insert their steps). Placeholder `Sources/DemoApp.swift`: `@main struct DemoApp: App` whose `WindowGroup` shows `BraisenlyEmptyState(title: "Braisenly Catalog", message: "Scaffold", systemImage: "sparkles")`. `Tests/SmokeTests.swift`: `@Test func appModuleLoads() { #expect(Bool(true)) }`. `UITests/LaunchSmokeTests.swift`: launches the app and asserts `app.wait(for: .runningForeground, timeout: 10)`.
 - [ ] **Step 5: Write `project.yml`** per spec §12 (no pre-build lint phase yet; Task 2 adds it).
 - [ ] **Step 6: Generate and build both destinations**
-  Run: `scripts/gen.sh && scripts/build-mac.sh && scripts/build-ios.sh -g && scripts/build-mac.sh -s BraisenlySwiftDemo-AI`
-  Expected: four `** BUILD SUCCEEDED **` (the AI build compiles MLX, allow ~5 min cold).
+  Run: `scripts/gen.sh && scripts/build-mac.sh && scripts/build-ios.sh -g`
+  Expected: three `** BUILD SUCCEEDED **`.
+- [ ] **Step 6b: Attempt the AI stub build (report, not gate, U-15)**
+  Run: `scripts/build-mac.sh -s BraisenlySwiftDemo-AI; echo "ai-build-exit=$?"`
+  Expected: either `** BUILD SUCCEEDED **` or a failure. Either way record `ai_build: pass|fail` and, on fail, the first
+  `error:` line in the handoff `open_issues`; the task does not fail on it (the AI build compiles MLX, allow ~5 min cold).
 - [ ] **Step 7: Run unit smoke test and the negative test**
   Run: `scripts/test-unit.sh && bash scripts/tests/simulator-refusal-negative.sh`
   Expected: `** TEST SUCCEEDED **` then `PASS simulator-refusal`.
@@ -121,9 +125,10 @@
 - [ ] **Step 4: Run all unit tests and lint**
   Run: `scripts/test-unit.sh && scripts/dogfood-lint.sh`
   Expected: `** TEST SUCCEEDED **`, `dogfood-lint: 0 hit(s)`.
-- [ ] **Step 5: Build the AI scheme to prove the stub compiles under the flag**
-  Run: `scripts/build-mac.sh -s BraisenlySwiftDemo-AI`
-  Expected: `** BUILD SUCCEEDED **`.
+- [ ] **Step 5: Attempt the AI scheme build with the stub under the flag (report, not gate, U-15)**
+  Run: `scripts/build-mac.sh -s BraisenlySwiftDemo-AI; echo "ai-build-exit=$?"`
+  Expected: `** BUILD SUCCEEDED **`, or record the first `error:` line in `open_issues` if it fails for package/MLX reasons.
+  A failure caused by this task's own `#if BRAISENLY_AI` code (e.g. in `CatalogGroup` or `AIEntries.swift`) is fixed here.
 - [ ] **Step 6: Commit** `git commit -m "feat(catalog): add typed registry, knobs, snippet rendering and invariant tests"`
 
 ### Task 4: App shell (DemoApp, sidebar, detail, knobs, snippet, launch options)
@@ -308,7 +313,7 @@ Every group task has the same shape; the per-task block below fixes its file, id
 
 **Interfaces:**
 - Consumes: everything above.
-- Produces: verification evidence for Phase 3 gate (lint 0 hits, completeness green, both builds green) and the Phase 5 hand-off (xcresult paths, screenshot dirs).
+- Produces: verification evidence for Phase 3 gate (lint 0 hits, completeness green, both core builds green; AI stub build status reported, not gated, U-15) and the Phase 5 hand-off (xcresult paths, screenshot dirs).
 
 - [ ] **Step 1: Full check**
   Run: `scripts/check.sh`
@@ -322,4 +327,8 @@ Every group task has the same shape; the per-task block below fixes its file, id
 - [ ] **Step 4: Confirm no simulator was used anywhere**
   Run: `rg -n "Simulator" scripts project.yml UITests Tests Sources | rg -v "refuse_simulator|refusing simulator|simulator-refusal"`
   Expected: no output.
-- [ ] **Step 5: Report** JSON handoff `{role, tasks_done[], files_changed[], tests[{cmd,result}], evidence[], open_issues[], blocked[]}`; no commit.
+- [ ] **Step 5: Report the AI stub build status (U-15, report only)**
+  Run: `scripts/build-mac.sh -s BraisenlySwiftDemo-AI; echo "ai-build-mac=$?"; scripts/build-ios.sh -g -s BraisenlySwiftDemo-AI; echo "ai-build-ios=$?"`
+  Expected: two exit codes recorded; any non-zero goes to `open_issues` with its first `error:` line for the run ledger.
+  This step never fails the release gate.
+- [ ] **Step 6: Report** JSON handoff `{role, tasks_done[], files_changed[], tests[{cmd,result}], evidence[], open_issues[], blocked[]}`; no commit.

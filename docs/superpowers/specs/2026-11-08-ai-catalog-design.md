@@ -105,7 +105,8 @@ Snippets follow demo spec §8 conventions. `ai.chatView`'s snippet shows the rea
   §5 rows above use these.
 - AI-C3 `AIChatWorkspaceController` has no client injection in the inventoried API; if sending from its composer can reach
   a real client, the package must add an injection point (e.g. `clientFactory: (AIInferenceConfiguration) -> any AIChatClient`)
-  before `ai.chatWorkspaceView` ships. Until then that entry's composer send is the open risk.
+  before `ai.chatWorkspaceView` ships. RESOLVED (U-17, 2026-11-08): filed as a package follow-up issue, scheduled with the AI
+  group; until it lands that entry's composer send is the open risk.
 - AI-C4 `AIConversationActionSheet` and `AIMessageBubble` write to the system pasteboard on copy; acceptable in the catalog
   (user action), logged via the closure where one exists.
 
