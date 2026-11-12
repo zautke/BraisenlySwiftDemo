@@ -1,7 +1,7 @@
 import BraisenlySwiftUI
 
 /// Static sample data shared by group entry files. No model loads, no I/O.
-enum Fixtures {
+nonisolated enum Fixtures {
     static let documentText = """
     Liquid Glass belongs on controls and navigation, never on the content it frames. The reading surface stays solid so \
     text keeps its contrast while the chrome around it refracts the page beneath.
