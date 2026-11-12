@@ -449,7 +449,8 @@ theme, normalised through `BraisenlyThemes.theme(withID:)` (unknown → `liquidG
 - Scans `*.swift` under `-p/--path` (default `Sources`), skipping lines whose first non-space characters are `//`. D-5 tokens
   match only as standalone identifiers, so `BraisenlyText(` and `accessibilityLabel(` do not hit:
   `(^|[^A-Za-z0-9_])(VStack|HStack|ZStack|ScrollView|List|Spacer|Divider|Text|Image|Button|Toggle|Picker|Slider|Stepper|TextField|Label|NavigationSplitView|NavigationStack)\(|\.font\(|(^|[^A-Za-z0-9_])Color\.|\.padding\([0-9]`
-  (`grep -nE`). Snippet string literals are scanned too.
+  (`grep -nE`). Snippet string literals are scanned too. Builder resolution 2026-11-12: a `.font(in:` call is exempt, because
+  `KnobValues.font` must call the package's `BraisenlyTextStyle.font(in:)`; SwiftUI's `.font(.body)` remains banned.
 - Output `path:line: banned: <match>` per hit, then `dogfood-lint: <n> hit(s)`; exit 1 on hits, 0 clean, 2 usage error.
 - Wired into `scripts/check.sh` and a `preBuildScripts` phase on both app targets (`ENABLE_USER_SCRIPT_SANDBOXING = NO`).
 - Negative test `scripts/tests/dogfood-lint-negative.sh`: temp `Bad.swift` with exactly `let a = VStack(`, `let b = Text("x")`,

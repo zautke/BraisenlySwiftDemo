@@ -15,7 +15,9 @@ n=0
 while IFS= read -r line; do
   content=${line#*:*:}
   [[ "$content" =~ ^[[:space:]]*// ]] && continue
-  match=$(grep -oE "$pattern" <<<"$content" | head -1)
+  # Package API `BraisenlyTextStyle.font(in:)` is the only allowed `.font(` call; SwiftUI's `.font(.body)` stays banned.
+  match=$(sed 's/\.font(in:/.FONT_IN(/g' <<<"$content" | grep -oE "$pattern" | head -1 || true)
+  [[ -z "$match" ]] && continue
   echo "${line%%:*}:$(cut -d: -f2 <<<"$line"): banned: $match"
   n=$((n+1))
 done < <(grep -rnE --include='*.swift' "$pattern" "$path" || true)

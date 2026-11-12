@@ -73,6 +73,8 @@ targets:
       base:
         # xcodegen emits the iOS bundle layout for TEST_HOST; macOS apps keep the executable under Contents/MacOS
         "TEST_HOST[sdk=macosx*]": "$(BUILT_PRODUCTS_DIR)/BraisenlySwiftDemo.app/Contents/MacOS/BraisenlySwiftDemo"
+        # Hosted Swift Testing deadlocks when every test is MainActor-isolated (XCTest blocks main); tests opt in per test
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
   BraisenlySwiftDemoUITests:
     type: bundle.ui-testing
     supportedDestinations: [iOS, macOS]
