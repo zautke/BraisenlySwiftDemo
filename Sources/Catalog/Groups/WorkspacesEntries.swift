@@ -29,7 +29,7 @@ nonisolated enum WorkspacesEntries {
             var v = values
             let title = v.string("documentTitle"), text = v.string("documentText")
             return AnyView(StateHost(CompactWorkspaceState()) { s in
-                BraisenlyCompactWorkspace(documentTitle: title, documentText: text, isSidebarOpen: s.isSidebarOpen, isActionSheetPresented: s.isActionSheetPresented, isContextPopoverOpen: s.isContextPopoverOpen, searchText: s.searchText, selectedMode: s.selectedMode, theme: s.themeID)
+                BraisenlyCompactWorkspace(documentTitle: title, documentText: text, isSidebarOpen: s.isSidebarOpen, isActionSheetPresented: s.isActionSheetPresented, isContextPopoverOpen: s.isContextPopoverOpen, searchText: s.searchText, selectedMode: s.selectedMode, theme: s.themeID).frame(width: 390)
             })
         },
         CatalogEntry(

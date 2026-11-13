@@ -32,8 +32,8 @@ nonisolated enum IndicatorsEntries {
                 .color(key: "foregroundColor", label: "Foreground", options: ColorToken.allCases, default: .accentTeal),
                 .color(key: "backgroundColor", label: "Background", options: ColorToken.allCases, default: .surfaceElevated),
                 .color(key: "borderColor", label: "Border", options: ColorToken.allCases, default: .borderSubtle),
-                .double(key: "size", label: "Size", range: 16...96, step: 2, default: 32),
-                .double(key: "iconSize", label: "Icon size", range: 8...48, step: 1, default: 14),
+                .double(key: "size", label: "Size", range: 16...96, step: 2, default: 56),
+                .double(key: "iconSize", label: "Icon size", range: 8...48, step: 1, default: 24),
             ]
         ) { values in
             var v = values
