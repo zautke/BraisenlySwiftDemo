@@ -8,7 +8,7 @@ nonisolated enum LayoutEntries {
             summary: "Vertical stack whose spacing is a theme step.",
             snippet: """
             BraisenlyVStack(alignment: .{{alignment}}, spacing: .{{spacing}}) {
-                BraisenlyText("Item 1").braisenlyCapsule()
+                BraisenlyText("Item 1").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
             }
             """,
             knobs: [.step(), .pick(key: "alignment", label: "Alignment", options: ["leading", "center", "trailing"], default: "center"),
@@ -23,7 +23,7 @@ nonisolated enum LayoutEntries {
             summary: "Horizontal stack whose spacing is a theme step.",
             snippet: """
             BraisenlyHStack(alignment: .{{alignment}}, spacing: .{{spacing}}) {
-                BraisenlyText("Item 1").braisenlyCapsule()
+                BraisenlyText("Item 1").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
             }
             """,
             knobs: [.step(), .pick(key: "alignment", label: "Alignment", options: ["top", "center", "bottom"], default: "center"),
@@ -38,7 +38,7 @@ nonisolated enum LayoutEntries {
             summary: "Layered stack aligned within its bounds.",
             snippet: """
             BraisenlyZStack(alignment: .{{alignment}}) {
-                BraisenlyText("Layer 1").braisenlyCapsule()
+                BraisenlyText("Layer 1").braisenlyPadding(.all, .xl).braisenlyCapsule()
             }
             """,
             knobs: [.pick(key: "alignment", label: "Alignment", options: ["topLeading", "center", "bottomTrailing"], default: "center"),
@@ -58,7 +58,7 @@ nonisolated enum LayoutEntries {
             summary: "Scroll container over one or both axes.",
             snippet: """
             BraisenlyScroll(.{{axis}}, showsIndicators: {{showsIndicators}}) {
-                BraisenlyVStack { BraisenlyText("Item 1").braisenlyCapsule() }
+                BraisenlyVStack { BraisenlyText("Item 1").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule() }
             }
             """,
             knobs: [.pick(key: "axis", label: "Axis", options: ["vertical", "horizontal"], default: "vertical"),
@@ -73,7 +73,7 @@ nonisolated enum LayoutEntries {
                     } else {
                         BraisenlyScroll(.vertical, showsIndicators: shows) { BraisenlyVStack { items(count) } }
                     }
-                }.frame(height: 240))
+                }.braisenlyPadding(.all, .m).frame(maxWidth: .infinity).frame(height: 240))
             }),
         CatalogEntry(
             id: "layout.spacer", group: .layout, typeName: "BraisenlySpacer", title: "Spacer",
@@ -129,7 +129,7 @@ nonisolated enum LayoutEntries {
             summary: "Themed SF Symbol with a size and tone.",
             snippet: "BraisenlyIcon(systemName: {{systemName}}, size: .{{size}}, tone: .{{tone}})",
             knobs: [.text(key: "systemName", label: "Symbol", default: "sparkles"),
-                    .pick(key: "size", label: "Size", options: ["small", "medium", "large"], default: "medium"), .tone()],
+                    .pick(key: "size", label: "Size", options: ["small", "medium", "large"], default: "large"), .tone()],
             make: { values in
                 var v = values
                 let name = v.string("systemName"), size = BraisenlyIconSize(rawValue: v.string("size")) ?? .medium, tone = v.tone()
@@ -140,7 +140,7 @@ nonisolated enum LayoutEntries {
             summary: "Adaptive grid that fits as many columns as the minimum width allows.",
             snippet: """
             BraisenlyGrid(minimumColumnWidth: {{minimumColumnWidth}}, spacing: .{{spacing}}) {
-                BraisenlyText("1").braisenlyCapsule()
+                BraisenlyText("1").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
             }
             """,
             knobs: [.double(key: "minimumColumnWidth", label: "Min column width", range: 40...320, step: 10, default: 120),
@@ -149,7 +149,7 @@ nonisolated enum LayoutEntries {
                 var v = values
                 let width = v.double("minimumColumnWidth"), count = v.int("itemCount"), spacing = v.step()
                 return AnyView(BraisenlyGrid(minimumColumnWidth: width, spacing: spacing) {
-                    ForEach(1...count, id: \.self) { BraisenlyText("\($0)").braisenlyCapsule() }
+                    ForEach(1...count, id: \.self) { BraisenlyText("\($0)").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule() }
                 })
             }),
         CatalogEntry(
@@ -188,7 +188,7 @@ nonisolated enum LayoutEntries {
     ]
 
     @MainActor @ViewBuilder private static func items(_ count: Int) -> some View {
-        ForEach(1...count, id: \.self) { BraisenlyText("Item \($0)").braisenlyCapsule() }
+        ForEach(1...count, id: \.self) { BraisenlyText("Item \($0)").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule() }
     }
 
     private static func hAlignment(_ raw: String) -> HorizontalAlignment {
