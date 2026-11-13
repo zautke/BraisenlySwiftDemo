@@ -5,7 +5,7 @@ nonisolated enum FieldsEntries {
     static let entries: [CatalogEntry] = [
         CatalogEntry(
             id: "fields.promptField", group: .fields, typeName: "BraisenlyPromptField",
-            title: "BraisenlyPromptField",
+            title: "Prompt Field",
             summary: "Multi-line message input on a chrome card; submit fires onSubmit.",
             snippet: """
             @State private var text = ""
@@ -29,7 +29,7 @@ nonisolated enum FieldsEntries {
             }),
         CatalogEntry(
             id: "fields.keyEntryField", group: .fields, typeName: "BraisenlyKeyEntryField",
-            title: "BraisenlyKeyEntryField",
+            title: "Key Entry Field",
             summary: "Secret entry with reveal toggle.",
             snippet: """
             @State private var key = ""
@@ -49,7 +49,7 @@ nonisolated enum FieldsEntries {
             }),
         CatalogEntry(
             id: "fields.parameterSliderRow", group: .fields, typeName: "BraisenlyParameterSliderRow",
-            title: "BraisenlyParameterSliderRow",
+            title: "Parameter Slider Row",
             summary: "Titled slider with a formatted value readout.",
             snippet: """
             @State private var value = 0.6
@@ -73,7 +73,7 @@ nonisolated enum FieldsEntries {
             }),
         CatalogEntry(
             id: "fields.textFieldRow", group: .fields, typeName: "BraisenlyTextFieldRow",
-            title: "BraisenlyTextFieldRow",
+            title: "Text Field Row",
             summary: "Captioned single- or multi-line text row on a content card.",
             snippet: """
             @State private var text = ""

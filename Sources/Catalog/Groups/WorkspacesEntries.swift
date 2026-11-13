@@ -29,7 +29,7 @@ nonisolated enum WorkspacesEntries {
             var v = values
             let title = v.string("documentTitle"), text = v.string("documentText")
             return AnyView(StateHost(CompactWorkspaceState()) { s in
-                BraisenlyCompactWorkspace(documentTitle: title, documentText: text, isSidebarOpen: s.isSidebarOpen, isActionSheetPresented: s.isActionSheetPresented, isContextPopoverOpen: s.isContextPopoverOpen, searchText: s.searchText, selectedMode: s.selectedMode, theme: s.themeID)
+                BraisenlyCompactWorkspace(documentTitle: title, documentText: text, isSidebarOpen: s.isSidebarOpen, isActionSheetPresented: s.isActionSheetPresented, isContextPopoverOpen: s.isContextPopoverOpen, searchText: s.searchText, selectedMode: s.selectedMode, theme: s.themeID).frame(width: 390)
             })
         },
         CatalogEntry(
@@ -51,17 +51,20 @@ nonisolated enum WorkspacesEntries {
         CatalogEntry(
             id: "workspaces.mobile", group: .workspaces, typeName: "BraisenlyMobileWorkspaceView",
             title: "Mobile Workspace View", summary: "Self-contained workspace that owns its state and theme.",
-            snippet: "BraisenlyMobileWorkspaceView(documentTitle: {{documentTitle}}, documentText: {{documentText}}, initialTheme: \"{{initialTheme}}\", platform: .{{platform}})",
+            snippet: "BraisenlyMobileWorkspaceView(documentTitle: {{documentTitle}}, documentText: {{documentText}}, initialTheme: {{initialTheme}}, platform: .{{platform}})",
             knobs: [
                 .text(key: "documentTitle", label: "Document title", default: "Home"),
                 .text(key: "documentText", label: "Document text", default: Fixtures.documentText),
-                .pick(key: "initialTheme", label: "Initial theme", options: themeIDs, default: "liquidGlass"),
+                .pick(key: "initialTheme", label: "Initial theme", options: ["app"] + themeIDs, default: "app"),
                 .platform(),
-            ], presentation: .canvas(height: 640)
+            ],
+            // "app" passes nil, so the workspace follows the environment theme.
+            snippetValues: ["initialTheme": Dictionary(uniqueKeysWithValues: [("app", "nil")] + themeIDs.map { ($0, "\"\($0)\"") })],
+            presentation: .canvas(height: 640)
         ) { values in
             var v = values
             let title = v.string("documentTitle"), text = v.string("documentText"), theme = v.string("initialTheme"), platform = v.platform()
-            return AnyView(BraisenlyMobileWorkspaceView(documentTitle: title, documentText: text, initialTheme: theme, platform: platform).id(theme))
+            return AnyView(BraisenlyMobileWorkspaceView(documentTitle: title, documentText: text, initialTheme: theme == "app" ? nil : theme, platform: platform).id(theme))
         },
     ]
 }
