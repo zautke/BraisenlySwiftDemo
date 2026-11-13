@@ -25,11 +25,18 @@ struct CatalogDetail: View {
                 SnippetPane(title: entry.title, code: entry.renderSnippet(values)) { log.record("Copied snippet") }
             }
             .braisenlyPadding(.all, .l)
-            .frame(maxWidth: BraisenlyPlatform.automatic.resolved(horizontalSizeClass: sizeClass).contentMaxWidth)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)  // a vertical scroll view hugs its content width; fill the column so the themed background does too
         }
         .accessibilityIdentifier("catalog.detail")
         .accessibilityValue(entry.id)
         .onChange(of: theme.id, initial: true) { values.theme = theme }
+    }
+
+    /// Canvas entries (workspaces, split views) need the whole column; reading-width only suits inline stages.
+    private var maxContentWidth: CGFloat {
+        if case .canvas = entry.presentation { return .infinity }
+        return BraisenlyPlatform.automatic.resolved(horizontalSizeClass: sizeClass).contentMaxWidth
     }
 
     @ViewBuilder private var stage: some View {
