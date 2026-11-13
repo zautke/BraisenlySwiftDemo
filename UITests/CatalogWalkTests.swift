@@ -111,12 +111,9 @@ final class CatalogWalkTests: XCTestCase {
             (sw.exists ? sw : knob).coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
             #endif
         case "stepper":
-            #if os(macOS)
-            let arrow = knob.incrementArrows.firstMatch
-            if arrow.exists { arrow.click() } else { knob.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).click() }
-            #else
-            (knob.buttons.allElementsBoundByIndex.last ?? knob).activate()
-            #endif
+            // BraisenlyStepperRow is two themed buttons; plus is labelled "Increment" and is last.
+            let plus = knob.buttons["Increment"].firstMatch
+            (plus.exists ? plus : (knob.buttons.allElementsBoundByIndex.last ?? knob)).activate()
         case "segment":
             let buttons = knob.buttons.allElementsBoundByIndex
             (buttons.first { !$0.isSelected } ?? knob).activate()
@@ -161,7 +158,8 @@ final class CatalogWalkTests: XCTestCase {
 private extension XCUIElement {
     @MainActor func activate() {
         #if os(macOS)
-        click()
+        // A plain-style button's accessibility frame is only its label, which can report "not hittable"; click its centre instead.
+        if isHittable { click() } else { coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click() }
         #else
         tap()
         #endif
