@@ -24,5 +24,6 @@ struct SnippetPane: View {
         }
         .accessibilityIdentifier("catalog.snippet")
         .accessibilityLabel("Code for \(title)")
+        .accessibilityValue(code)
     }
 }

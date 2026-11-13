@@ -11,6 +11,7 @@ struct KnobsPane: View {
         BraisenlySectionHeader("Knobs", systemImage: "slider.horizontal.3")
         ForEach(knobs) { knob in
             control(for: knob)
+                .accessibilityElement(children: .contain)  // keep each option's own label under the knob's
                 .accessibilityIdentifier("knob.\(knob.key)")
                 .accessibilityLabel(knob.label)
         }
