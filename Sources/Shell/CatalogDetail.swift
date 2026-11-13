@@ -25,8 +25,9 @@ struct CatalogDetail: View {
                 SnippetPane(title: entry.title, code: entry.renderSnippet(values)) { log.record("Copied snippet") }
             }
             .braisenlyPadding(.all, .l)
-            .frame(maxWidth: maxContentWidth)
-            .frame(maxWidth: .infinity)  // a vertical scroll view hugs its content width; fill the column so the themed background does too
+            .braisenlyPadding(.leading, .xs)  // l + xs = 20 pt: title left edge lines up with the toolbar title
+            .frame(maxWidth: maxContentWidth, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)  // fill the column so the themed background does too; leading keeps the left edge constant
         }
         .accessibilityIdentifier("catalog.detail")
         .accessibilityValue(entry.id)
