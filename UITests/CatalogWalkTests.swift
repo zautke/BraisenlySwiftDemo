@@ -104,7 +104,12 @@ final class CatalogWalkTests: XCTestCase {
         switch kind {
         case "toggle":
             let sw = knob.switches.firstMatch.exists ? knob.switches.firstMatch : knob.checkBoxes.firstMatch
-            (sw.exists ? sw : knob).activate()
+            #if os(macOS)
+            (sw.exists ? sw : knob).click()
+            #else
+            // A row-wide Toggle only flips when the tap lands on the switch itself, at the trailing edge.
+            (sw.exists ? sw : knob).coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+            #endif
         case "stepper":
             #if os(macOS)
             let arrow = knob.incrementArrows.firstMatch
