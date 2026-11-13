@@ -22,7 +22,8 @@ nonisolated enum SidebarEntries {
             id: "sidebar.footer", group: .sidebar, typeName: "BraisenlySidebarFooter",
             title: "Sidebar Footer", summary: "Bottom bar showing the selected sidebar mode.",
             snippet: "BraisenlySidebarFooter(selectedMode: .{{selectedMode}}, platform: .{{platform}}) { }",
-            knobs: [.pick(key: "selectedMode", label: "Mode", options: modeOptions, default: "Files"), .platform()]
+            knobs: [.pick(key: "selectedMode", label: "Mode", options: modeOptions, default: "Files"), .platform()],
+            snippetValues: ["selectedMode": Dictionary(uniqueKeysWithValues: BraisenlySidebarMode.allCases.map { ($0.rawValue, String(describing: $0)) })]
         ) { values in
             var v = values
             let mode = BraisenlySidebarMode(rawValue: v.string("selectedMode")) ?? .files, platform = v.platform()

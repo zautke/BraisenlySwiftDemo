@@ -5,8 +5,9 @@ nonisolated struct KnobValues {
     var theme: BraisenlyThemeDefinition
     private var storage: [String: KnobValue]
     private let log: ActionLog
-    // Reads of undeclared keys are recorded here instead of trapping; the registry invariant test asserts it stays empty.
-    private(set) var missingKeys: Set<String> = []
+    // Reads of undeclared keys are recorded on the shared log instead of trapping, so copies handed to `make` report too;
+    // the registry invariant test asserts it stays empty.
+    var missingKeys: Set<String> { log.missingKeys }
 
     init(knobs: [Knob], theme: BraisenlyThemeDefinition, log: ActionLog) {
         self.theme = theme
@@ -21,7 +22,7 @@ nonisolated struct KnobValues {
 
     private mutating func read(_ key: String) -> KnobValue? {
         if let v = storage[key] { return v }
-        missingKeys.insert(key)
+        log.recordMissing(key)
         return nil
     }
 

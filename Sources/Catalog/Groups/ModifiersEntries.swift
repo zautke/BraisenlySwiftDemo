@@ -145,6 +145,7 @@ nonisolated enum ModifiersEntries {
                 .pick(key: "glass", label: "Glass", options: ["regular", "clear", "identity"], default: "regular"),
                 .pick(key: "role", label: "Role", options: roles, default: "control"),
             ],
+            snippetValues: ["surface": ["glass": ".glass(.{{glass}})", "solid": ".solid"]],
             make: { values in
                 var v = values
                 let surface = v.string("surface")

@@ -49,6 +49,7 @@ nonisolated enum TokensEntries {
             .bool(key: "showNames", label: "Show names", default: true),
             .pick(key: "theme", label: "Theme", options: ["app"] + themeIDs, default: "app"),
         ],
+        snippetValues: ["theme": ["app": "{{appThemeID}}"]],
         make: { values in
             var v = values
             let minWidth = v.double("minColumnWidth")

@@ -52,7 +52,8 @@ nonisolated enum RowsGroupsEntries {
             id: "rowsGroups.searchMetadataRow", group: .rowsGroups, typeName: "BraisenlySearchMetadataRow",
             title: "Search Metadata Row", summary: "Fixed metadata strip shown above search results.",
             snippet: "BraisenlySearchMetadataRow()\n    .frame(maxWidth: {{stageWidth}})",
-            knobs: [.pick(key: "stageWidth", label: "Stage width", options: ["fill", "375", "760"], default: "fill")]
+            knobs: [.pick(key: "stageWidth", label: "Stage width", options: ["fill", "375", "760"], default: "fill")],
+            snippetValues: ["stageWidth": ["fill": ".infinity"]]
         ) { values in
             var v = values
             let width: CGFloat = switch v.string("stageWidth") { case "375": 375; case "760": 760; default: .infinity }

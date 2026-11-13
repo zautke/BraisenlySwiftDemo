@@ -57,6 +57,20 @@ import BraisenlySwiftUI
         #expect(v.missingKeys.isEmpty, "missing: \(v.missingKeys)")
     }
 
+    /// Picks whose display value is not a Swift expression must still render compilable snippet text.
+    @Test @MainActor func pickSnippetsRenderSwiftExpressions() throws {
+        let expected = [
+            "modifiers.glassSurfaces": "themed.surface = .glass(.regular)",
+            "rowsGroups.searchMetadataRow": ".frame(maxWidth: .infinity)",
+            "sidebar.footer": "selectedMode: .files,",
+            "tokens.colors": "theme(withID: \"liquidGlass\")",
+        ]
+        for (id, text) in expected {
+            let e = try entry(id)
+            #expect(e.renderSnippet(defaults(e)).contains(text), "\(id): \(e.renderSnippet(defaults(e)))")
+        }
+    }
+
     @Test(arguments: ids) @MainActor func rendersWithDefaults(id: String) throws {
         let e = try entry(id)
         #expect(Self.renders(e, defaults(e)))
