@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 0.1.0 - 2026-11-12
+## 0.1.0 - 2026-11-13
 
 ### Added
 - Catalog shell: split view with theme switcher, search, grouped sidebar, live stage, knobs pane and code snippet.
