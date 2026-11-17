@@ -16,7 +16,12 @@ while [[ $# -gt 0 ]]; do case "$1" in
 [[ -n "$entry" && -n "$theme" && -n "$out" ]] || { Usage >&2; exit 2; }
 load_env; require_vars BUILD_LOCK_FILE BUNDLE_ID_PREFIX; cd "$(repo_root)"
 run() {
-  if [[ $build == 1 ]]; then scripts/gen.sh >/dev/null; scripts/build-mac.sh 2>&1 | grep -E "error:|\*\* BUILD" || true; fi
+  if [[ $build == 1 ]]; then
+    local log
+    log=$(scripts/gen.sh 2>&1 && scripts/build-mac.sh 2>&1) || {
+      grep -E "error:|\*\* BUILD" <<<"$log" >&2 || tail -5 <<<"$log" >&2
+      echo "shot.sh: build failed, no screenshot taken" >&2; exit 1; }
+  fi
   local app="build/DerivedData/Build/Products/Debug/BraisenlySwiftDemo.app"
   pkill -x BraisenlySwiftDemo 2>/dev/null || true
   defaults delete "$BUNDLE_ID_PREFIX.BraisenlySwiftDemo" 2>/dev/null || true  # drop saved window frames so defaultSize applies
