@@ -33,7 +33,12 @@ run() {
   done
   [[ -n "$id" ]] || { echo "shot.sh: no window appeared" >&2; pkill -x BraisenlySwiftDemo || true; exit 1; }
   sleep 1.5
-  mkdir -p "$(dirname "$out")"; screencapture -x -o -l "$id" "$out"
+  mkdir -p "$(dirname "$out")"
+  if ! screencapture -x -o -l "$id" "$out" || [[ ! -s "$out" ]]; then
+    echo "shot.sh: screencapture failed for $out" >&2
+    pkill -x BraisenlySwiftDemo || true
+    exit 1
+  fi
   pkill -x BraisenlySwiftDemo || true
   echo "$out"
 }
