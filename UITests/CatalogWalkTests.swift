@@ -146,6 +146,14 @@ final class CatalogWalkTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["catalog.stage"].firstMatch.waitForExistence(timeout: 10))
         let row = app.descendants(matching: .any)["catalog.row.layout.text"].firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5))
+        // The row can sit below the fold in the sidebar; scroll it into view first.
+        let sidebar = app.descendants(matching: .any)["catalog.sidebar"].firstMatch
+        var attempts = 0
+        while !row.isHittable && attempts < 15 {
+            sidebar.scroll(byDeltaX: 0, deltaY: -120)
+            attempts += 1
+        }
+        XCTAssertTrue(row.isHittable, "sidebar row never became hittable after scrolling")
         row.activate()
         let detail = app.descendants(matching: .any)["catalog.detail"].firstMatch
         let ok = NSPredicate(format: "value == 'layout.text'")
