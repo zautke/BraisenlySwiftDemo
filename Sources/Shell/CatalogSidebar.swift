@@ -32,5 +32,6 @@ struct CatalogSidebar: View {
             }
             .braisenlyPadding(.all, .m)
         }
+        .accessibilityIdentifier("catalog.sidebar")
     }
 }

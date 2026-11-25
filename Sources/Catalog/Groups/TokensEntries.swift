@@ -87,8 +87,8 @@ nonisolated enum TokensEntries {
         title: "Metrics & Scales", summary: "Scalar layout metrics plus the spacing and radius scales.",
         snippet: """
         BraisenlyHStack(spacing: .{{step}}) {
-            BraisenlyText("A").braisenlyCapsule()
-            BraisenlyText("B").braisenlyCapsule()
+            BraisenlyText("A").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
+            BraisenlyText("B").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
         }
         BraisenlyText("Card").braisenlyPadding(.all, .{{step}}).braisenlyCard(cornerRadius: theme.metrics.radius[.{{step}}])
         """,
@@ -111,8 +111,8 @@ nonisolated enum TokensEntries {
             return AnyView(BraisenlyVStack(alignment: .leading, spacing: .l) {
                 BraisenlyPropertyTable(rows: rows)
                 BraisenlyHStack(spacing: step) {
-                    BraisenlyText("A").braisenlyCapsule()
-                    BraisenlyText("B").braisenlyCapsule()
+                    BraisenlyText("A").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
+                    BraisenlyText("B").braisenlyPadding(.horizontal, .m).braisenlyPadding(.vertical, .xs).braisenlyCapsule()
                 }
                 BraisenlyText("Card")
                     .braisenlyPadding(.all, step)

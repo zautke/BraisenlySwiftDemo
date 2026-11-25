@@ -111,12 +111,9 @@ final class CatalogWalkTests: XCTestCase {
             (sw.exists ? sw : knob).coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
             #endif
         case "stepper":
-            #if os(macOS)
-            let arrow = knob.incrementArrows.firstMatch
-            if arrow.exists { arrow.click() } else { knob.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).click() }
-            #else
-            (knob.buttons.allElementsBoundByIndex.last ?? knob).activate()
-            #endif
+            // BraisenlyStepperRow is two themed buttons; plus is labelled "Increment" and is last.
+            let plus = knob.buttons["Increment"].firstMatch
+            (plus.exists ? plus : (knob.buttons.allElementsBoundByIndex.last ?? knob)).activate()
         case "segment":
             let buttons = knob.buttons.allElementsBoundByIndex
             (buttons.first { !$0.isSelected } ?? knob).activate()
@@ -149,6 +146,14 @@ final class CatalogWalkTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["catalog.stage"].firstMatch.waitForExistence(timeout: 10))
         let row = app.descendants(matching: .any)["catalog.row.layout.text"].firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5))
+        // The row can sit below the fold in the sidebar; scroll it into view first.
+        let sidebar = app.descendants(matching: .any)["catalog.sidebar"].firstMatch
+        var attempts = 0
+        while !row.isHittable && attempts < 15 {
+            sidebar.scroll(byDeltaX: 0, deltaY: -120)
+            attempts += 1
+        }
+        XCTAssertTrue(row.isHittable, "sidebar row never became hittable after scrolling")
         row.activate()
         let detail = app.descendants(matching: .any)["catalog.detail"].firstMatch
         let ok = NSPredicate(format: "value == 'layout.text'")
@@ -161,7 +166,8 @@ final class CatalogWalkTests: XCTestCase {
 private extension XCUIElement {
     @MainActor func activate() {
         #if os(macOS)
-        click()
+        // A plain-style button's accessibility frame is only its label, which can report "not hittable"; click its centre instead.
+        if isHittable { click() } else { coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click() }
         #else
         tap()
         #endif

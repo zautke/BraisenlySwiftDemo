@@ -55,8 +55,8 @@ struct KnobsPane: View {
         case .color(let key, let label, let options, let def):
             let current: ColorToken = if case .color(let c) = values[key] { c } else { def }
             BraisenlyVStack(alignment: .leading, spacing: .xs) {
-                BraisenlyText(label, style: .metadata, tone: .secondary)
-                BraisenlyGrid(minimumColumnWidth: 56, spacing: .s) {
+                BraisenlyText("\(label) · \(current.rawValue)", style: .metadata, tone: .secondary)
+                BraisenlyGrid(minimumColumnWidth: 112, spacing: .xs) {
                     ForEach(options, id: \.self) { token in
                         BraisenlyColorSwatch(color: token.color(in: values.theme), name: token.rawValue, isSelected: token == current) {
                             values[key] = .color(token)

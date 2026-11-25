@@ -7,7 +7,7 @@ nonisolated enum DocumentEntries {
             id: "document.chrome", group: .document, typeName: "BraisenlyDocumentChrome",
             title: "Document Chrome", summary: "Top chrome of a document: sidebar toggle, title area, theme and actions.",
             snippet: "@State private var themeID = BraisenlyThemes.liquidGlass.id\nBraisenlyDocumentChrome(theme: $themeID, platform: .{{platform}}, onToggleSidebar: { }, onEdit: { }, onOpenActionSheet: { })",
-            knobs: [.platform()], presentation: .canvas(height: 160)
+            knobs: [.platform()], presentation: .canvas(height: 360)
         ) { values in
             var v = values
             let platform = v.platform()
@@ -33,11 +33,11 @@ nonisolated enum DocumentEntries {
             id: "document.actionSheet", group: .document, typeName: "BraisenlyDocumentActionSheet",
             title: "Document Action Sheet", summary: "Action sheet content for a document, rendered inline.",
             snippet: "BraisenlyDocumentActionSheet(platform: .{{platform}})",
-            knobs: [.platform()], presentation: .canvas(height: 520)
+            knobs: [.platform()], presentation: .canvas(height: 540)
         ) { values in
             var v = values
             let platform = v.platform()
-            return AnyView(BraisenlyDocumentActionSheet(platform: platform))
+            return AnyView(BraisenlyDocumentActionSheet(platform: platform).frame(maxWidth: 420))
         },
         CatalogEntry(
             id: "document.bottomToolbar", group: .document, typeName: "BraisenlyBottomToolbar",
