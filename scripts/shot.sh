@@ -42,4 +42,5 @@ run() {
   pkill -x BraisenlySwiftDemo || true
   echo "$out"
 }
-/usr/bin/lockf "$BUILD_LOCK_FILE" bash -c "$(declare -f run); BUNDLE_ID_PREFIX='$BUNDLE_ID_PREFIX'; build=$build entry='$entry' theme='$theme' out='$out'; run"
+export BUNDLE_ID_PREFIX build entry theme out
+/usr/bin/lockf "$BUILD_LOCK_FILE" bash -c "$(declare -f run); run"
